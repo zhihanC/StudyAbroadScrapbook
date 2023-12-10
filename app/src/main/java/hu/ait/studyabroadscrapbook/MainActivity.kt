@@ -10,6 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
+import androidx.navigation.compose.rememberNavController
+import hu.ait.studyabroadscrapbook.ui.navigation.MainNavigation
+import hu.ait.studyabroadscrapbook.ui.screen.login.LoginScreen
+import hu.ait.studyabroadscrapbook.ui.screen.main.MainScreen
 import hu.ait.studyabroadscrapbook.ui.theme.StudyAbroadScrapbookTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    MainAppNavHost()
                 }
             }
         }
@@ -30,17 +39,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun MainAppNavHost(
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(navController = navController,
+        startDestination = MainNavigation.LoginScreen.route) {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    StudyAbroadScrapbookTheme {
-        Greeting("Android")
+        composable(MainNavigation.LoginScreen.route) {
+            LoginScreen(onLoginSuccess = {
+                navController.navigate(MainNavigation.MainScreen.route)
+            })
+        }
+        composable(MainNavigation.MainScreen.route) {
+            MainScreen()
+        }
     }
+
 }
