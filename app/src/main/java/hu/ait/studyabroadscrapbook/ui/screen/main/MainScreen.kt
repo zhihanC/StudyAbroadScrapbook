@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -68,7 +70,8 @@ import hu.ait.studyabroadscrapbook.ui.navigation.InnerNavigation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    mainViewModel: MainViewModel = viewModel()
+    mainViewModel: MainViewModel = viewModel(),
+    onLogout: () -> Unit
 ) {
     val context = LocalContext.current
     var selectedBottomTab by remember { mutableStateOf(0) }
@@ -77,13 +80,16 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Study Abroad Scrapbook") },
-                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
+                title = { Text(
+                    text = "Study Abroad Scrapbook:\nAIT Fall 2023"
+                ) },
+                colors = TopAppBarDefaults.smallTopAppBarColors(containerColor =
+                MaterialTheme.colorScheme.secondaryContainer),
                 actions = {
                     IconButton(onClick = {
-                        //
+                        onLogout()
                     }) {
-                        Icon(imageVector = Icons.Default.Info, contentDescription = null)
+                        Icon(imageVector = Icons.Default.Logout, contentDescription = null)
                     }
                 }
             )

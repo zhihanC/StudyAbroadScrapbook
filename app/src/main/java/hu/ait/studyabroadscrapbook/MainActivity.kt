@@ -51,7 +51,9 @@ fun MainAppNavHost(
             })
         }
         composable(MainNavigation.MainScreen.route) {
-            MainScreen()
+            MainScreen(onLogout = {
+                navController.navigate(MainNavigation.LoginScreen.route)
+            })
         }
     }
 

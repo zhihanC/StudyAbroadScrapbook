@@ -1,5 +1,6 @@
 package hu.ait.studyabroadscrapbook.ui.screen.login
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,13 +52,27 @@ fun LoginScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Box() {
-        Text(
-            text = "Welcome",
+        Column(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .padding(top = 50.dp),
-            fontSize = 30.sp
-        )
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            Text(
+                text = "Study Abroad Scrapbook",
+                modifier = Modifier
+                    .padding(top = 50.dp),
+                fontSize = 30.sp
+            )
+
+            Text(
+                text = "AIT Budapest: Fall 2023",
+                modifier = Modifier
+                    .padding(top = 20.dp),
+                fontSize = 30.sp
+            )
+        }
+
 
         Column(
             modifier = Modifier
