@@ -1,5 +1,6 @@
 package hu.ait.studyabroadscrapbook.ui.screen.main
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,15 +17,15 @@ import kotlinx.coroutines.flow.callbackFlow
 
 sealed interface MainUiState {
     object Init : MainUiState
-    object UploadPlaceInProgress : MainUiState
-    object PlaceUploadSuccess : MainUiState
-    data class PlacesRetrieved(val placeList: List<PostWithId>) : MainUiState
+    object UploadPostInProgress : MainUiState
+    object PostUploadSuccess : MainUiState
+    data class PostsRetrieved(val postList: List<PostWithId>) : MainUiState
     data class Error(val error: String?) : MainUiState
 }
 
 class MainViewModel: ViewModel(){
     companion object {
-        const val COLLECTION_PLACES = "places"
+        const val COLLECTION_POSTS = "posts"
     }
 
     var mainUiState: MainUiState by mutableStateOf(MainUiState.Init)
@@ -36,44 +37,48 @@ class MainViewModel: ViewModel(){
         currentUserId = auth.currentUser!!.uid
     }
 
-    fun uploadPlace(latLng: LatLng, placeTitle: String, placeText: String) {
-        mainUiState = MainUiState.UploadPlaceInProgress
+    fun uploadPlace(
+        latLng: LatLng,
+        placeTitle: String,
+        placeText: String
+    ) {
+        mainUiState = MainUiState.UploadPostInProgress
 
         val newPlace = Post(
             uid = auth.currentUser!!.uid,
             author = auth.currentUser!!.email!!,
             title = placeTitle,
             body = placeText,
-            imgUrl = "",
+//            imgUrl = postImage,
             lat = latLng.latitude,
             lng = latLng.longitude
         )
 
-        val placeCollection = FirebaseFirestore.getInstance().collection(COLLECTION_PLACES)
-        placeCollection.add(newPlace).addOnSuccessListener {
-            mainUiState = MainUiState.PlaceUploadSuccess
+        val postCollection = FirebaseFirestore.getInstance().collection(COLLECTION_POSTS)
+        postCollection.add(newPlace).addOnSuccessListener {
+            mainUiState = MainUiState.PostUploadSuccess
         }.addOnFailureListener{
             mainUiState = MainUiState.Error(it.message)
         }
 
     }
 
-    fun placeList() = callbackFlow {
+    fun postList() = callbackFlow {
         val snapshotListener =
-            FirebaseFirestore.getInstance().collection(COLLECTION_PLACES)
+            FirebaseFirestore.getInstance().collection(COLLECTION_POSTS)
                 .addSnapshotListener() { snapshot, e ->
                     val response = if (snapshot != null) {
 
-                        val placeList = snapshot.toObjects(Post::class.java)
-                        val placeWithIdList = mutableListOf<PostWithId>()
+                        val postList = snapshot.toObjects(Post::class.java)
+                        val postWithIdList = mutableListOf<PostWithId>()
 
-                        placeList.forEachIndexed { index, place ->
-                            placeWithIdList.add(PostWithId(snapshot.documents[index].id,
+                        postList.forEachIndexed { index, place ->
+                            postWithIdList.add(PostWithId(snapshot.documents[index].id,
                                 place))
                         }
 
-                        MainUiState.PlacesRetrieved(
-                            placeWithIdList
+                        MainUiState.PostsRetrieved(
+                            postWithIdList
                         )
                     } else {
                         MainUiState.Error(e?.message.toString())
@@ -86,10 +91,10 @@ class MainViewModel: ViewModel(){
         }
     }
 
-    fun deletePlace(placeKey: String) {
+    fun deletePost(postKey: String) {
         FirebaseFirestore.getInstance().collection(
-            COLLECTION_PLACES
-        ).document(placeKey).delete()
+            COLLECTION_POSTS
+        ).document(postKey).delete()
     }
 
 }

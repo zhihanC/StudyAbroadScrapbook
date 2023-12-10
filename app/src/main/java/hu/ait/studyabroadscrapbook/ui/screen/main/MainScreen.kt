@@ -68,7 +68,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "MyPlaces App") },
+                title = { Text(text = "Study Abroad Scrapbook") },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor = MaterialTheme.colorScheme.secondaryContainer),
                 actions = {
                     IconButton(onClick = {
@@ -146,12 +146,12 @@ fun MainScreen(
                 }
 
                 MainUiState.Init -> {}
-                MainUiState.PlaceUploadSuccess -> {}
-                MainUiState.UploadPlaceInProgress -> {
+                MainUiState.PostUploadSuccess -> {}
+                MainUiState.UploadPostInProgress -> {
                     CircularProgressIndicator()
                 }
 
-                is MainUiState.PlacesRetrieved -> {}
+                is MainUiState.PostsRetrieved -> {}
             }
         }
     }
@@ -192,18 +192,18 @@ fun MapView(
         }
     )
     {
-        val placeListState = mainViewModel.placeList().collectAsState(MainUiState.Init)
+        val postListState = mainViewModel.postList().collectAsState(MainUiState.Init)
 
-        if (placeListState.value is MainUiState.PlacesRetrieved) {
-            for (place in (placeListState.value as MainUiState.PlacesRetrieved).placeList) {
+        if (postListState.value is MainUiState.PostsRetrieved) {
+            for (post in (postListState.value as MainUiState.PostsRetrieved).postList) {
                 Marker(
                     state = MarkerState(
                         position = LatLng(
-                            place.post.lat,
-                            place.post.lng
+                            post.post.lat,
+                            post.post.lng
                         )
                     ),
-                    title = "${place.post.title}"
+                    title = "${post.post.title}"
                 )
             }
         }
@@ -224,17 +224,17 @@ fun MapView(
 
 @Composable
 fun ListView(mainViewModel: MainViewModel) {
-    val placeListState = mainViewModel.placeList().collectAsState(MainUiState.Init)
+    val postListState = mainViewModel.postList().collectAsState(MainUiState.Init)
 
-    if (placeListState.value == MainUiState.Init) {
+    if (postListState.value == MainUiState.Init) {
         Text(text = "Initializing..")
-    } else if (placeListState.value is MainUiState.PlacesRetrieved) {
+    } else if (postListState.value is MainUiState.PostsRetrieved) {
         LazyColumn() {
-            items((placeListState.value as MainUiState.PlacesRetrieved).placeList) {
-                PlaceCard(
-                    place = it.post,
+            items((postListState.value as MainUiState.PostsRetrieved).postList) {
+                PostCard(
+                    post = it.post,
                     onRemoveItem = {
-                        mainViewModel.deletePlace(it.postId)
+                        mainViewModel.deletePost(it.postId)
                     },
                     currentUserId = mainViewModel.currentUserId
                 )
@@ -246,8 +246,8 @@ fun ListView(mainViewModel: MainViewModel) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaceCard(
-    place: Post,
+fun PostCard(
+    post: Post,
     onRemoveItem: () -> Unit = {},
     currentUserId: String = ""
 ) {
@@ -274,22 +274,22 @@ fun PlaceCard(
                         .weight(1f)
                 ) {
                     Text(
-                        text = place.author,
+                        text = post.author,
                     )
                     Text(
-                        text = place.title,
+                        text = post.title,
                     )
                     Text(
-                        text = place.body,
+                        text = post.body,
                     )
                     Text(
-                        text = "${place.lat}, ${place.lng}",
+                        text = "${post.lat}, ${post.lng}",
                     )
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    if (currentUserId.equals(place.uid)) {
+                    if (currentUserId.equals(post.uid)) {
                         Icon(
                             imageVector = Icons.Filled.Delete,
                             contentDescription = "Delete",

@@ -1,5 +1,11 @@
 package hu.ait.studyabroadscrapbook.ui.screen.main
 
+import android.graphics.Bitmap
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +23,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
@@ -30,6 +37,24 @@ fun AddNewPostDialog(
 ) {
     var postTitle by remember { mutableStateOf("") }
     var postBody by remember { mutableStateOf("") }
+
+    var imageUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val context = LocalContext.current
+    val bitmap =  remember {
+        mutableStateOf<Bitmap?>(null)
+    }
+
+    val pickMedia = rememberLauncherForActivityResult(contract =
+    ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            imageUri = uri
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
 
     Dialog(onDismissRequest = onDialogClose) {
         Surface(
@@ -58,6 +83,12 @@ fun AddNewPostDialog(
                         postBody = it
                     }
                 )
+
+                Button(onClick = {
+                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
+                }) {
+                    Text(text = "Pick image")
+                }
 
                 Button(onClick = {
                     onAddPost(postTitle, postBody)
