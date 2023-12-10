@@ -15,18 +15,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,10 +47,10 @@ fun AddNewPostDialog(
         mutableStateOf<Uri?>(null)
     }
 
-    val context = LocalContext.current
-    val bitmap =  remember {
-        mutableStateOf<Bitmap?>(null)
-    }
+//    val context = LocalContext.current
+//    val bitmap =  remember {
+//        mutableStateOf<Bitmap?>(null)
+//    }
 
     val pickMedia = rememberLauncherForActivityResult(contract =
     ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -56,16 +61,24 @@ fun AddNewPostDialog(
         }
     }
 
-    Dialog(onDismissRequest = onDialogClose) {
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    Dialog(
+        onDismissRequest = onDialogClose
+
+    ) {
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(),
             shape = RoundedCornerShape(size = 6.dp)
         ) {
+
             Column(
                 modifier = Modifier.padding(10.dp)
             ) {
+
                 Text(text = "Lat: ${latLng.latitude}")
                 Text(text = "Long: ${latLng.longitude}")
 
@@ -76,6 +89,7 @@ fun AddNewPostDialog(
                         postTitle = it
                     }
                 )
+
                 OutlinedTextField(value = postBody,
                     modifier = Modifier.fillMaxWidth(),
                     label = { Text(text = "Description") },
@@ -91,12 +105,22 @@ fun AddNewPostDialog(
                 }
 
                 Button(onClick = {
-                    onAddPost(postTitle, postBody)
-                    onDialogClose()
+                    if (imageUri == null) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Please select an image!")
+                        }
+                    } else {
+                        onAddPost(postTitle, postBody)
+                        onDialogClose()
+                    }
                 }) {
                     Text(text = "Add place")
                 }
             }
         }
     }
+    SnackbarHost(
+        hostState = snackbarHostState,
+        modifier = Modifier.padding(16.dp)
+    )
 }
