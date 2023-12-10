@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "569796375304",
+    "project_id": "studyabroadscrapbook",
+    "storage_bucket": "studyabroadscrapbook.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569796375304:android:9aa8f6b3b7e61ddd9672bd",
+        "android_client_info": {
+          "package_name": "hu.ait.studyabroadscrapbook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyPW9JOWUEk1Dc1c5MBtyxey4afAvLnNM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
