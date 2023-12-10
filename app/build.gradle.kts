@@ -90,6 +90,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.0.1")
 
     implementation("com.google.accompanist:accompanist-permissions:0.33.2-alpha")
+
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
     // Hilt - DI
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-compiler:2.44")

@@ -1,11 +1,14 @@
 package hu.ait.studyabroadscrapbook.ui.screen.main
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -55,7 +58,9 @@ import androidx.compose.ui.unit.dp
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import hu.ait.studyabroadscrapbook.data.Post
+import coil.compose.AsyncImage
 
+@RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -157,6 +162,7 @@ fun MainScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun MapView(
     mainViewModel: MainViewModel
@@ -212,8 +218,13 @@ fun MapView(
 
     if (showAdd) {
         AddNewPostDialog(latLng = clickedCoord,
-            onAddPost = { postTitle, postBody ->
-                mainViewModel.uploadPlace(clickedCoord, postTitle, postBody)
+            onAddPost = { postTitle, postBody, imageUri ->
+                mainViewModel.uploadPostImage(
+                    context.contentResolver,
+                    imageUri,
+                    clickedCoord,
+                    postTitle,
+                    postBody)
             },
             onDialogClose = {
                 showAdd = false
@@ -279,6 +290,15 @@ fun PostCard(
                     Text(
                         text = post.title,
                     )
+
+                    if (post.imgUrl != "") {
+                        AsyncImage(
+                            model = post.imgUrl,
+                            modifier = Modifier.size(100.dp, 100.dp),
+                            contentDescription = "selected image"
+                        )
+                    }
+
                     Text(
                         text = post.body,
                     )

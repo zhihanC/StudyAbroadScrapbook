@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AddNewPostDialog(
     latLng: LatLng,
-    onAddPost: (String, String) -> Unit,
+    onAddPost: (String, String, Uri) -> Unit,
     onDialogClose: () -> Unit = {},
 ) {
     var postTitle by remember { mutableStateOf("") }
@@ -110,7 +110,7 @@ fun AddNewPostDialog(
                             snackbarHostState.showSnackbar("Please select an image!")
                         }
                     } else {
-                        onAddPost(postTitle, postBody)
+                        onAddPost(postTitle, postBody, imageUri!!)
                         onDialogClose()
                     }
                 }) {
