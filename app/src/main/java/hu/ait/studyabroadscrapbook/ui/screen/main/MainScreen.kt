@@ -110,12 +110,14 @@ fun MainScreen(
                             Text(
                                 text = "Map",
                                 fontWeight = FontWeight.SemiBold,
+                                style = TextStyle(fontSize = 15.sp)
                             )
                         },
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.Map,
                                 contentDescription = "Map",
+                                modifier = Modifier.size(30.dp)
                             )
                         })
                     NavigationBarItem(selected = selectedBottomTab == 1,
@@ -127,14 +129,16 @@ fun MainScreen(
                         },
                         label = {
                             Text(
-                                text = "List",
+                                text = "Posts",
                                 fontWeight = FontWeight.SemiBold,
+                                style = TextStyle(fontSize = 15.sp)
                             )
                         },
                         icon = {
                             Icon(
                                 imageVector = Icons.Default.List,
                                 contentDescription = "List",
+                                modifier = Modifier.size(30.dp)
                             )
                         })
                 }
@@ -343,7 +347,7 @@ fun PostCard(
                     Text(
                         text = post.body,
                         fontSize = 13.sp,
-                        modifier = Modifier.padding(5.dp),
+                        modifier = Modifier.padding(top = 5.dp),
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         color = Color.Gray

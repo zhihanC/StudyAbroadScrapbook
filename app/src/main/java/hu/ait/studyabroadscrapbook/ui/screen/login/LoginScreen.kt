@@ -154,7 +154,9 @@ fun LoginScreen(
                 is LoginUiState.Error -> Text(
                     text = "Error: ${
                         (loginViewModel.loginUiState as LoginUiState.Error).error
-                    }"
+                    }",
+                    modifier = Modifier
+                        .padding(16.dp)
                 )
                 is LoginUiState.LoginSuccess -> {}
                 LoginUiState.Init -> {}
