@@ -32,10 +32,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
+import hu.ait.studyabroadscrapbook.R
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,8 +80,12 @@ fun AddNewPostDialog(
         }
     }
 
+
+
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
+
+    var context = LocalContext.current
 
     Dialog(
         onDismissRequest = onDialogClose
@@ -101,7 +107,7 @@ fun AddNewPostDialog(
 
                 OutlinedTextField(value = postTitle,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Title") },
+                    label = { Text(text = stringResource(R.string.title)) },
                     isError = titleInputErrorState,
                     onValueChange = {
                         titleInputErrorState = false
@@ -129,7 +135,7 @@ fun AddNewPostDialog(
                 OutlinedTextField(value = postBody,
                     modifier = Modifier.fillMaxWidth(),
                     isError = bodyInputErrorState,
-                    label = { Text(text = "Description") },
+                    label = { Text(text = stringResource(R.string.description)) },
                     onValueChange = {
                         bodyInputErrorState = false
                         postBody = it
@@ -155,26 +161,26 @@ fun AddNewPostDialog(
                 Button(onClick = {
                     pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
                 }) {
-                    Text(text = "Pick image")
+                    Text(text = stringResource(R.string.pick_image))
                 }
 
                 Button(onClick = {
                     if (postTitle.isEmpty()) {
-                        titleErrorText = "Post title cannot be empty!"
+                        titleErrorText = context.getString(R.string.post_title_cannot_be_empty)
                         titleInputErrorState = true
                     } else if (postBody.isEmpty()) {
-                        bodyErrorText = "Post description cannot be empty!"
+                        bodyErrorText = context.getString(R.string.post_description_cannot_be_empty)
                         bodyInputErrorState = true
                     } else if (imageUri == null) {
                         scope.launch {
-                            snackbarHostState.showSnackbar("Please select an image!")
+                            snackbarHostState.showSnackbar(context.getString(R.string.please_select_an_image))
                         }
                     } else {
                         onAddPost(postTitle, postBody, imageUri!!)
                         onDialogClose()
                     }
                 }) {
-                    Text(text = "Add place")
+                    Text(text = stringResource(R.string.add_place))
                 }
             }
         }

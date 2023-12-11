@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,6 +64,7 @@ import com.google.maps.android.compose.MapType
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
+import hu.ait.studyabroadscrapbook.R
 import hu.ait.studyabroadscrapbook.data.Post
 import hu.ait.studyabroadscrapbook.ui.navigation.InnerNavigation
 
@@ -81,7 +83,7 @@ fun MainScreen(
         topBar = {
             TopAppBar(
                 title = { Text(
-                    text = "Study Abroad Scrapbook:\nAIT Fall 2023"
+                    text = stringResource(R.string.study_abroad_scrapbook_ait_fall_2023)
                 ) },
                 colors = TopAppBarDefaults.smallTopAppBarColors(containerColor =
                 MaterialTheme.colorScheme.secondaryContainer),
@@ -108,7 +110,7 @@ fun MainScreen(
                         },
                         label = {
                             Text(
-                                text = "Map",
+                                text = stringResource(R.string.map),
                                 fontWeight = FontWeight.SemiBold,
                                 style = TextStyle(fontSize = 15.sp)
                             )
@@ -129,7 +131,7 @@ fun MainScreen(
                         },
                         label = {
                             Text(
-                                text = "Posts",
+                                text = stringResource(R.string.posts),
                                 fontWeight = FontWeight.SemiBold,
                                 style = TextStyle(fontSize = 15.sp)
                             )
@@ -252,7 +254,7 @@ fun ListView(mainViewModel: MainViewModel) {
     val postListState = mainViewModel.postList().collectAsState(MainUiState.Init)
 
     if (postListState.value == MainUiState.Init) {
-        Text(text = "Initializing..")
+        Text(text = stringResource(R.string.initializing))
     } else if (postListState.value is MainUiState.PostsRetrieved) {
         LazyColumn(
             modifier = Modifier
@@ -320,8 +322,8 @@ fun PostCard(
                                 modifier = Modifier
                                     .weight(1f)
                                     .clickable {
-                                    onRemoveItem()
-                                },
+                                        onRemoveItem()
+                                    },
                                 tint = Color.Red
                             )
                         }

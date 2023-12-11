@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">StudyAbroadScrapbook</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="pick_image">Pick image</string>
+    <string name="post_title_cannot_be_empty">Post title cannot be empty!</string>
+    <string name="post_description_cannot_be_empty">Post description cannot be empty!</string>
+    <string name="please_select_an_image">Please select an image!</string>
+    <string name="add_place">Add place</string>
+    <string name="study_abroad_scrapbook_ait_fall_2023">Study Abroad Scrapbook:\nAIT Fall 2023</string>
+    <string name="map">Map</string>
+    <string name="posts">Posts</string>
+    <string name="initializing">Initializing...</string>
+    <string name="study_abroad_scrapbook">Study Abroad Scrapbook</string>
+    <string name="ait_budapest_fall_2023">AIT Budapest: Fall 2023</string>
+    <string name="e_mail">E-mail</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="registration_ok">Registration OK</string>
+    <string name="error">"Error: "</string>
 </resources>
