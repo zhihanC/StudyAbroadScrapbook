@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -24,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,16 +46,28 @@ fun AddNewPostDialog(
     onDialogClose: () -> Unit = {},
 ) {
     var postTitle by remember { mutableStateOf("") }
+
+    var titleErrorText by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var titleInputErrorState by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     var postBody by remember { mutableStateOf("") }
+
+    var bodyErrorText by rememberSaveable {
+        mutableStateOf("")
+    }
+
+    var bodyInputErrorState by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     var imageUri by remember {
         mutableStateOf<Uri?>(null)
     }
-
-//    val context = LocalContext.current
-//    val bitmap =  remember {
-//        mutableStateOf<Bitmap?>(null)
-//    }
 
     val pickMedia = rememberLauncherForActivityResult(contract =
     ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -84,19 +101,56 @@ fun AddNewPostDialog(
 
                 OutlinedTextField(value = postTitle,
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Place title") },
+                    label = { Text(text = "Title") },
+                    isError = titleInputErrorState,
                     onValueChange = {
+                        titleInputErrorState = false
                         postTitle = it
+                    },
+                    supportingText = {
+                        if (titleInputErrorState)
+                            Text(
+                                text = titleErrorText,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
+                    },
+                    trailingIcon = {
+                        if (titleInputErrorState) {
+                            Icon(
+                                Icons.Filled.Warning, "error",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                 )
 
                 OutlinedTextField(value = postBody,
                     modifier = Modifier.fillMaxWidth(),
+                    isError = bodyInputErrorState,
                     label = { Text(text = "Description") },
                     onValueChange = {
+                        bodyInputErrorState = false
                         postBody = it
+                    },
+                    supportingText = {
+                    if (bodyInputErrorState)
+                        Text(
+                            text = bodyErrorText,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                },
+                trailingIcon = {
+                    if (bodyInputErrorState) {
+                        Icon(
+                            Icons.Filled.Warning, "error",
+                            tint = MaterialTheme.colorScheme.error
+                        )
                     }
-                )
+                })
 
                 Button(onClick = {
                     pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageAndVideo))
@@ -105,7 +159,13 @@ fun AddNewPostDialog(
                 }
 
                 Button(onClick = {
-                    if (imageUri == null) {
+                    if (postTitle.isEmpty()) {
+                        titleErrorText = "Post title cannot be empty!"
+                        titleInputErrorState = true
+                    } else if (postBody.isEmpty()) {
+                        bodyErrorText = "Post description cannot be empty!"
+                        bodyInputErrorState = true
+                    } else if (imageUri == null) {
                         scope.launch {
                             snackbarHostState.showSnackbar("Please select an image!")
                         }
